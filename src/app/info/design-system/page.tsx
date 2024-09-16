@@ -1,14 +1,5 @@
 "use client";
 import React from "react";
-import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import ChartTempComponent from "@/components/design_system_components/charts/chart_temp_component";
 import AreaTempChart from "@/components/design_system_components/charts/area_temp_chart";
 import { Button } from "@/components/ui/button";

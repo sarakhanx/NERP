@@ -19,7 +19,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   useEffect(() => {
     const token = getCookie('token');
     if (!token) {
-      router.push("/");
+      router.push("/signin");
     } else {
       const decodedToken = decodeToken(token);
       if (!decodedToken || typeof decodedToken === 'string' || !('roles' in decodedToken)) {

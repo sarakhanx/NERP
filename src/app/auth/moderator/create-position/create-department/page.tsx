@@ -17,20 +17,6 @@ import {
 import Maxwidth from "@/components/client_component/layout_components/Maxwidth";
 import Link from "next/link";
 
-const departments = [
-  { name: "IT", position: "IT Manager" },
-  { name: "Marketing", position: "Marketing Manager" },
-  { name: "Sales", position: "Sales Manager" },
-  { name: "Customer Service", position: "Customer Service Manager" },
-  { name: "Human Resources", position: "Human Resources Manager" },
-  { name: "Finance", position: "Finance Manager" },
-  { name: "Operations", position: "Operations Manager" },
-  {
-    name: "Research and Development",
-    position: "Research and Development Manager",
-  },
-  { name: "Quality Assurance", position: "Quality Assurance Manager" },
-];
 
 const createDepartmentSchema = z.object({
   position: z.string().min(1),

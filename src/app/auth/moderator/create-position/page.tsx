@@ -3,7 +3,7 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import CreateDepartment from "@/components/form_components/moderator/CreateDepartment";
+import CreateDepartment from "@/components/form_components/moderator/CreatePosition";
 import { useSession } from "@/lib/custom_hooks/useSession";
 
 export default function Page() {

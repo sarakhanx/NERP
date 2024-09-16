@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import SidebarComponent from "@/components/client_component/layout_components/SidebarComponent";
+import { SessionProvider } from "@/lib/custom_hooks/useSession";
+import ProdLayout from "@/components/prod_ui/layout_ui/navigation_components/ProdLayout";
 import DynamicBreadcrumb from "@/components/client_component/layout_components/Breadcrumb";
 
 export const metadata: Metadata = {
@@ -13,9 +14,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-        <SidebarComponent>
-          <DynamicBreadcrumb/>
-        {children}
-        </SidebarComponent>
+    <SessionProvider>
+      <ProdLayout>
+        <DynamicBreadcrumb />
+        <main>{children}</main>
+      </ProdLayout>
+    </SessionProvider>
   );
 }

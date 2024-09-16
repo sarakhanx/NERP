@@ -1,5 +1,5 @@
 "use client";
-
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,50 +14,61 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import Maxwidth from "@/components/client_component/layout_components/Maxwidth";
-import Link from "next/link";
-import { HousePlus } from "lucide-react";
-
-const departments = [
-  { name: "IT", position: "IT Manager" },
-  { name: "Marketing", position: "Marketing Manager" },
-  { name: "Sales", position: "Sales Manager" },
-  { name: "Customer Service", position: "Customer Service Manager" },
-  { name: "Human Resources", position: "Human Resources Manager" },
-  { name: "Finance", position: "Finance Manager" },
-  { name: "Operations", position: "Operations Manager" },
-  {
-    name: "Research and Development",
-    position: "Research and Development Manager",
-  },
-  { name: "Quality Assurance", position: "Quality Assurance Manager" },
-];
+import { getCookie } from "cookies-next";
 
 const createDepartmentSchema = z.object({
   position: z.string().min(1),
-  name: z.string({
-    message: "Department is required",
-    required_error: "Department is required",
-  }),
+  name: z
+    .string({
+      message: "Department is required",
+      required_error: "Department is required",
+    })
+    .min(1),
 });
 
 export default function CreateDepartment() {
+  const { toast } = useToast();
+  const token = getCookie("token");
+
   const form = useForm<z.infer<typeof createDepartmentSchema>>({
     resolver: zodResolver(createDepartmentSchema),
     defaultValues: {
+      name: "สร้างแผนก",
       position: "สร้าง Position ของพนักงาน",
     },
   });
 
-  const onSubmit = (data: z.infer<typeof createDepartmentSchema>) => {
-    console.log(data);
+  const onSubmit = async (data: z.infer<typeof createDepartmentSchema>) => {
+    console.log("form data : ", data);
+    console.log("token :", token);
+    toast({
+      title: `"Ya token."${token}`,
+      description: "There was a problem with your request.",
+      variant: "destructive", // หรือ "success", "error", "warning" ตามที่คุณต้องการ
+      duration: 5000, // ระยะเวลาที่ toast จะแสดง (มิลลิวินาที)
+    });
+    // try {
+    //   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-department`, {
+    //     method: "POST",
+    //     body: JSON.stringify(data),
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       "Authorization": `Bearer ${token}`,
+    //     },
+    //   });
+    //   if(!res.ok){
+    //     const error = await res.json();
+    //     console.log(error)
+    //     throw new Error("Error creating position");
+    //   }
+    //   const json = await res.json();
+    //   console.log(json);
+
+    // } catch (error) {
+    //   console.log(error)
+    //   throw new Error("Error creating position");
+    // }
   };
   return (
     <>
@@ -65,51 +76,22 @@ export default function CreateDepartment() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full justify-center items-center"
+            className="w-full flex flex-col justify-center items-start gap-4"
           >
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormLabel className="text-xs prm-r text-foreground dark:text-foreground">
-                    Department
+                    Name Of Department
                   </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="text-xs prm-r text-foreground dark:text-foreground">
-                        <SelectValue
-                          className="text-xs prm-r text-foreground dark:text-foreground"
-                          placeholder="Select a department"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {departments.map((department) => (
-                        <SelectItem
-                          className="text-xs prm-r text-foreground dark:text-foreground"
-                          key={department.name}
-                          value={department.name}
-                        >
-                          {department.name}
-                        </SelectItem>
-                      ))}
-                      <div className="flex justify-center items-center w-full">
-                      <Button
-                        className="text-xs prm-r text-foreground dark:text-foregroun w-full items-baseline gap-2"
-                        variant="outline"
-                      >
-                        <Link href="/auth/moderator/create-position/create-department">
-                          สร้างแผนกใหม่
-                        </Link>
-                        <HousePlus size={14} strokeWidth={2.5}/>
-                      </Button>
-                      </div>
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      className="text-xs prm-r text-foreground dark:text-foreground"
+                    />
+                  </FormControl>
                   <FormDescription className="text-xs prm-l text-muted-foreground dark:text-muted-foreground">
                     สร้างแผนกของพนักงาน
                   </FormDescription>
@@ -118,12 +100,11 @@ export default function CreateDepartment() {
               )}
             />
 
-
             <FormField
               control={form.control}
               name="position"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormLabel className="text-xs prm-r text-foreground dark:text-foreground">
                     Position Of Employee
                   </FormLabel>
@@ -140,7 +121,12 @@ export default function CreateDepartment() {
                 </FormItem>
               )}
             />
-            <Button type="submit">Create</Button>
+            <Button
+              type="submit"
+              className="prm-b -tracking-tighter text-xs text-foreground dark:text-foreground"
+            >
+              สร้างตำแหน่งโดยอ้างอิงแผนกที่มีอยู่
+            </Button>
           </form>
         </Form>
       </Maxwidth>
