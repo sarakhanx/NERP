@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
+import SidebarComponent from "@/components/client_component/layout_components/SidebarComponent";
 
 export const metadata: Metadata = {
   title: "NERP",
@@ -13,16 +12,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en"
-    className="dark" 
-    >
-      <body
-      className="bg-background dark:bg-background "
-      >
-        <main>
+        <SidebarComponent>
         {children}
-        </main>
-      </body>
-    </html>
+        </SidebarComponent>
   );
 }

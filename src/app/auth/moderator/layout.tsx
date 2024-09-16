@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
+import { SessionProvider } from "@/lib/custom_hooks/useSession";
 
 export const metadata: Metadata = {
-  title: "NERP",
+  title: "Moderator | NERP",
   description: "The enterprise resource planning system for Need Company.",
 };
 
@@ -13,16 +12,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en"
-    className="dark" 
-    >
-      <body
-      className="bg-background dark:bg-background "
-      >
+    <SessionProvider>
         <main>
         {children}
         </main>
-      </body>
-    </html>
+    </SessionProvider>
   );
 }
