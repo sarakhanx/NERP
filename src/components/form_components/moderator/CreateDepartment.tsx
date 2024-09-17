@@ -42,33 +42,41 @@ export default function CreateDepartment() {
   const onSubmit = async (data: z.infer<typeof createDepartmentSchema>) => {
     console.log("form data : ", data);
     console.log("token :", token);
-    toast({
-      title: `"Ya token."${token}`,
-      description: "There was a problem with your request.",
-      variant: "destructive", // หรือ "success", "error", "warning" ตามที่คุณต้องการ
-      duration: 5000, // ระยะเวลาที่ toast จะแสดง (มิลลิวินาที)
-    });
-    // try {
-    //   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-department`, {
-    //     method: "POST",
-    //     body: JSON.stringify(data),
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       "Authorization": `Bearer ${token}`,
-    //     },
-    //   });
-    //   if(!res.ok){
-    //     const error = await res.json();
-    //     console.log(error)
-    //     throw new Error("Error creating position");
-    //   }
-    //   const json = await res.json();
-    //   console.log(json);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-department`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      if(!res.ok){
+        const error = await res.json();
+        toast({
+          title: `${error.status.toUpperCase()}`,
+          description: `${error.message}`,
+          variant: "destructive", 
+          duration: 5000,
+        });
+      }
+      const json = await res.json();
+      toast({
+        title: `${json.status}`,
+        description: `${json.message}`,
+        variant: "default", 
+        duration: 5000,
+      });
 
-    // } catch (error) {
-    //   console.log(error)
-    //   throw new Error("Error creating position");
-    // }
+    } catch (error) {
+      console.log(error)
+      toast({
+        title: "ERROR",
+        description: "An unexpected error occurred. Please try again later.",
+        variant: "destructive", 
+        duration: 5000,
+      });
+    }
   };
   return (
     <>
@@ -125,7 +133,7 @@ export default function CreateDepartment() {
               type="submit"
               className="prm-b -tracking-tighter text-xs text-foreground dark:text-foreground"
             >
-              สร้างตำแหน่งโดยอ้างอิงแผนกที่มีอยู่
+              สร้างแผนกใหม่
             </Button>
           </form>
         </Form>

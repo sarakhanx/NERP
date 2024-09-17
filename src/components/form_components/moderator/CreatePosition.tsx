@@ -24,6 +24,8 @@ import {
 import Maxwidth from "@/components/client_component/layout_components/Maxwidth";
 import Link from "next/link";
 import { HousePlus } from "lucide-react";
+import { getCookie } from "cookies-next";
+import { useToast } from "@/hooks/use-toast";
 
 const departments = [
   { name: "IT", position: "IT Manager" },
@@ -49,6 +51,8 @@ const createDepartmentSchema = z.object({
 });
 
 export default function CreatePosition() {
+  const { toast } = useToast();
+  const token = getCookie("token");
   const form = useForm<z.infer<typeof createDepartmentSchema>>({
     resolver: zodResolver(createDepartmentSchema),
     defaultValues: {
@@ -56,8 +60,44 @@ export default function CreatePosition() {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof createDepartmentSchema>) => {
-    console.log(data);
+  const onSubmit = async (data: z.infer<typeof createDepartmentSchema>) => {
+    console.log("form data : ", data);
+    console.log("token :", token);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-department`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      if(!res.ok){
+        const error = await res.json();
+        toast({
+          title: `${error.status.toUpperCase()}`,
+          description: `${error.message}`,
+          variant: "destructive", 
+          duration: 5000,
+        });
+      }
+      const json = await res.json();
+      toast({
+        title: `${json.status}`,
+        description: `${json.message}`,
+        variant: "default", 
+        duration: 5000,
+      });
+
+    } catch (error) {
+      console.log(error)
+      toast({
+        title: "ERROR",
+        description: "An unexpected error occurred. Please try again later.",
+        variant: "destructive", 
+        duration: 5000,
+      });
+    }
   };
   return (
     <>
@@ -117,8 +157,6 @@ export default function CreatePosition() {
                 </FormItem>
               )}
             />
-
-
             <FormField
               control={form.control}
               name="position"

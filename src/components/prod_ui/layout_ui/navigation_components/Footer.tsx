@@ -1,8 +1,8 @@
 const Footer = () =>{
 
     return (
-        <div className="flex justify-center items-center p-2 w-full bg-primary">
-            <h1 className="text-2xl font-bold text-foreground dark:text-foreground">Footer</h1>
+        <div className="flex justify-center items-center p-2 w-full border-t border-border">
+            <h1 className="text-xs prm-l text-foreground dark:text-foreground">POWERED BY NEED DEVELOPER</h1>
         </div>
     )
 }

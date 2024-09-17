@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { SessionProvider } from "@/lib/custom_hooks/useSession";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "AUTHORIZATION",
@@ -22,6 +23,7 @@ export default function RootLayout({
         <SessionProvider>
         <main>
         {children}
+        <Toaster />
         </main>
         </SessionProvider>
       </body>

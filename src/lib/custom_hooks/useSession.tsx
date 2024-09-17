@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getCookie } from 'cookies-next';
 import decodeToken from '@/lib/auth/jwt/decodeToken';
-import { useRouter } from 'next/navigation';
+import { useRouter , usePathname } from 'next/navigation';
 
 interface SessionContextProps {
   user: any;
@@ -15,11 +15,12 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const token = getCookie('token');
     if (!token) {
-      router.push("/signin");
+      router.push(`/signin?redirect=${encodeURIComponent(pathname)}`);
     } else {
       const decodedToken = decodeToken(token);
       if (!decodedToken || typeof decodedToken === 'string' || !('roles' in decodedToken)) {
@@ -30,8 +31,6 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
     }
   }, []);
-
-  console.log(user);
 
   return (
     <SessionContext.Provider value={{ user, loading }}>

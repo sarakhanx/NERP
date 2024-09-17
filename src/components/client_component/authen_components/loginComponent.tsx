@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MonitorCog, ShieldPlus, UserPlus, Eye, EyeOff } from "lucide-react";
 import useShowPassword from "@/lib/custom_hooks/useShowPassword";
-import { useRouter } from "next/navigation";
+import { useRouter , useSearchParams } from "next/navigation";
 
 interface Form {
   name: string;
@@ -42,6 +42,10 @@ export default function LoginComponent() {
     position: "",
   });
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect') || '/info/design-system';
+
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -77,8 +81,7 @@ export default function LoginComponent() {
             maxAge: 24 * 60 * 60 * 7,
             path: "/",
           });
-          alert("DONE")
-          router.push("/info/debug/debug-cookie-header");
+          router.push(redirect);
         }else{
           console.log("The Response from the server is :",data);
         }
@@ -102,7 +105,7 @@ export default function LoginComponent() {
             maxAge: 24 * 60 * 60 * 7,
             path: "/",
           });
-          router.push("/info/design-system");
+          router.push(redirect);
         }else{
           console.log("The Response from the server is :",data);
         }
