@@ -51,6 +51,15 @@ const Sidebar = ({
   const { isCollapsed, isMobile, toggleSidebar, setIsCollapsed } = useSidebar();
   const [essenMeu, setEssenMenu] = React.useState<any[]>(essentialMenu);
   const [deptMenu, setDeptMenu] = React.useState<any[]>(departmentMenu);
+  const [active ,setActive] = React.useState<string>("")
+
+
+  const activeBtn = (e:any) =>{
+    setActive(e)
+  }
+    
+
+
   return (
     <>
       <ResizablePanelGroup direction="horizontal" className="min-h-screen">
@@ -92,7 +101,9 @@ const Sidebar = ({
 
               <div className="flex flex-col justify-center items-start mb-4 gap-2 border-b border-border">
                 {essenMeu.map((essMenu , i)=>(
-                    <Button key={i} variant="ghost" className="w-full justify-start" size={isCollapsed ? "icon" : "default"}>
+                    <Button key={i} variant="ghost" className={`w-full justify-start ${active === essMenu.name ? "bg-secondary" : ""}`} size={isCollapsed ? "icon" : "default"}
+                    onClick={() => activeBtn(essMenu.name)}
+                    >
                         <Link className="flex" href={essMenu.href}>
                         <essMenu.icon className="h-4 w-4 mr-2 text-foreground dark:text-foreground" />
                         {!isCollapsed && (
@@ -106,7 +117,9 @@ const Sidebar = ({
               </div>
               <div className="flex flex-col justify-center items-start mb-4 gap-2">
                 {deptMenu.map((deptMenu , i)=>( 
-                    <Button key={i} variant="ghost" className="w-full justify-start" size={isCollapsed ? "icon" : "default"}>
+                    <Button key={i} variant="ghost" className={`w-full justify-start ${active === deptMenu.name ? "bg-secondary" : ""} `} size={isCollapsed ? "icon" : "default"}
+                    onClick={() => activeBtn(deptMenu.name)}
+                    >
                         <Link className="flex" href={deptMenu.href}>
                         <deptMenu.icon className="h-4 w-4 mr-2 text-foreground dark:text-foreground" />
                         {!isCollapsed && (

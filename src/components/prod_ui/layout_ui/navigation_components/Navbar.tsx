@@ -12,22 +12,40 @@ import {
   Home,
   LogOut,
   MessageSquareWarning,
+  Store,
   User,
+  Warehouse,
 } from "lucide-react";
 import React from "react";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+
+
+
+
 
 const Navbar = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
+  const pathName = usePathname();
+  React.useEffect(() => {
+    console.log("pathName is : ",pathName)
+  },[pathName])
+  
+  //NOTE - Searchbar
+  // const searchParams = useSearchParams()
+  // const search = searchParams.getAll("search")
+  // //http://localhost:3000/nerp/dashboard?search=%search-value-will-be-here%
+  // console.log(search) //OUTPUT : ["search-value-will-be-here"]
+
   return (
     <>
       <div className="flex justify-between m-2 border-b border-border rounded-md p-2">
         <nav className="flex justify-between items-center w-full">
           <h1 className="text-2xl font-bold text-foreground dark:text-foreground underline underline-offset-4">
-            LOGO
+            {pathName.split('/').pop()?.toUpperCase()}
           </h1>
           <div className="flex justify-between">
             <Searchbar />

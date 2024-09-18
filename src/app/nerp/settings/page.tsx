@@ -16,7 +16,7 @@ export default function SettingsPage() {
     }
     
     if(!user || !user.roles.includes("moderator")){
-        router.push("/404")
+        router.push("/")
     }
     return (
         <>

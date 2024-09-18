@@ -28,7 +28,7 @@ export default function Home() {
   return (
     
       <div className="bg-background dark:bg-background flex justify-center items-center gap-4 w-full">
-        <h1 className="text-2xl font-bold text-foreground dark:text-foreground">HELLO USERS</h1>
+        <h1 className="text-2xl font-bold text-foreground dark:text-foreground">HELLO {user.email}</h1>
       </div>
   );
 }
