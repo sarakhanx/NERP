@@ -60,11 +60,6 @@ export default function GetDepartments() {
     return (
         <div>
             <h1 className="prm-b  -tracking-tighter underline underline-offset-2 text-2xl font-bold text-foreground dark:text-foreground">แผนกและตำแหน่งทั้งหมด</h1>
-            {/* <ul className="flex flex-col gap-4 text-sm text-foreground dark:text-foreground">
-                {department.map((department) => (
-                    <li key={department.id}>{department.name}</li>
-                ))}
-            </ul> */}
             <BacsicTable fucntion={deleteDepartment} departments={department} />
         </div>
     )

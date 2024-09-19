@@ -11,148 +11,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { MessageSquareWarning, Search, Store, Warehouse } from "lucide-react";
 import Link from "next/link";
-
-const menuData = [
-  {
-    service: "Reports",
-    subServices: [
-      {
-        name: "Target",
-        link: "/nerp/reports/target",
-      },
-      {
-        name: "Best Seller",
-        link: "/nerp/reports/bestseller",
-      },
-      {
-        name: "Statics",
-        link: "/nerp/reports/statics",
-      },
-    ],
-  },
-  {
-    service: "Products",
-    subServices: [
-      {
-        name: "Inventory",
-        link: "/nerp/products/inventory",
-      },
-      {
-        name: "Order",
-        link: "/nerp/products/order",
-      },
-      {
-        name: "Preorder Listed",
-        link: "/nerp/products/preorder",
-      },
-    ],
-  },
-  {
-    service: "Configuration",
-    subServices: [
-      {
-        name: "Essential",
-        link: "/nerp/configuration/essential",
-      },
-      {
-        name: "Setting Application",
-        link: "/nerp/configuration/setting",
-      },
-    ],
-  },
-];
-const services = [
-  {
-    name: "Warehouse-Services",
-    icon: Warehouse,
-    href: "/nerp/warehouse-services",
-    label: "Warehouse",
-    service: [
-      {
-        user_services:[
-          {
-            menu : "เช็คสินค้า",
-            href : "/nerp/warehouse-services/products"
-          },
-          {
-            menu : "สินค้ารอรับเข้า",
-            href : "/nerp/warehouse-services/products/incoming"
-          },
-          {
-            menu : "โอนย้ายสินค้า",
-            href : "/nerp/warehouse-services/products/transfer"
-          },
-          {
-            menu : "เช็คสถานะสินค้า",
-            href : "/nerp/warehouse-services/products/status"
-          },
-          {
-            menu : "Debug",
-            href : "/nerp/warehouse-services/debug"
-          },
-        ]
-      },
-      {
-        admin_services:[
-          {
-            menu : "สร้างสินค้า",
-            href : "/nerp/warehouse-services/products/new-product"
-          },
-          {
-            menu : "รับสินค้า",
-            href : "/nerp/warehouse-services/products/docstatus/receive"
-          },
-        ]
-      },
-    ]
-  },
-  {
-    name: "Sales-Services",
-    icon: Store,
-    href: "/nerp/sales-services",
-    label: "Sales",
-    service: [
-      {
-        user_services:[
-          {
-            menu : "เช็คสินค้า",
-            href : "/nerp/sales-services/products"
-          },
-          {
-            menu : "รายชื่อลูกค้า",
-            href : "/nerp/sales-services/customers/listed"
-          },
-          {
-            menu : "สร้างใบขาย",
-            href : "/nerp/sales-services/products/transfer"
-          },
-          {
-            menu : "สถานะใบขาย",
-            href : "/nerp/sales-services/products/status"
-          },
-        ]
-      },
-      {
-        admin_services:[
-          {
-            menu : "อนุมัติใบขาย",
-            href : "/nerp/sales-services/products/new-product"
-          },
-          {
-            menu : "รายงานการขาย",
-            href : "/nerp/sales-services/reports/sales"
-          },
-        ]
-      },
-    ]
-  },
-]
+import {essential, authServices} from "@/helper/json-helper/menu_data"
 
 
+
+//ANCHOR - Menu Data
+const menuData = essential
+const services = authServices
 const Searchbar = () => {
   const pathname = usePathname();
-  const [menu, setMenu] = React.useState(menuData);
-  const [service, setServices] = React.useState(services);
+  const [menu, setMenu] = React.useState<any[]>(menuData);
+  const [service, setServices] = React.useState<any[]>(services);
 
   return (
     <div className="flex justify-between gap-4 items-center">
@@ -212,7 +81,7 @@ const Searchbar = () => {
 
       {/* NOTE - Essential */}
       <div className="flex justify-between gap-2">
-        {menu.map((menu, i) => (
+        {menu.map((menu:any, i:any) => (
           <DropdownMenu key={i}>
             <DropdownMenuTrigger asChild>
               <Button className="p-2 bg-transparent hover:bg-transparent text-foreground dark:text-foreground text-md font-semibold">
@@ -220,7 +89,7 @@ const Searchbar = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="bottom">
-              {menu.subServices.map((services, i) => (
+              {menu.subServices.map((services:any, i:any) => (
                 <DropdownMenuItem key={i}>
                   <Link
                     href={`${services.link}`}
