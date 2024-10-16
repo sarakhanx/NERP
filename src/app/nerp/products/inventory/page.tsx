@@ -15,33 +15,37 @@ import {
 } from "@/components/ui/table";
 import "./page.css"; // Import the CSS file
 import Link from "next/link";
-
-// Mock data for products
-const products = Array.from({ length: 500 }, (_, i) => ({
-  id: i + 1,
-  name: `Product ${i + 1}`,
-  description: `Description for Product ${i + 1}`,
-  image: `/placeholder.svg?height=100&width=100&text=P${i + 1}`,
-  price: `10${i + 1}`,
-  qty: `10${i + 1}`,
-  category: `Category ${i + 1}`,
-  createdAt: `01 jan 2023 18:${i + 1}`,
-  updatedAt: `01 jan 2024 19:${i + 1}`,
-}));
+import React from "react";
 
 export default function InventoryPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(100);
+  const [products, setProducts] = useState<any[]>([])
 
   const totalPages = Math.ceil(products.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentProducts = products.slice(startIndex, endIndex);
 
+
+  //Fetching data from API
+  const api = process.env.NEXT_PUBLIC_API_URL_D
+  React.useEffect(()=>{
+    const fetchData = async () =>{
+      const resp = await fetch(`${api}/products?page=${currentPage}`)
+      const data = await resp.json()
+      console.log(data)
+      setProducts(data.products)
+    }
+
+    fetchData()
+  },[currentPage,itemsPerPage])
+
+
+  // Paginations
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
-
   const handleItemsPerPageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
     if (value > 0) {
@@ -94,16 +98,16 @@ export default function InventoryPage() {
                 Price
               </TableHead>
               <TableHead className="prm-b -tracking-tight text-foreground dark:text-foreground">
-                Stock
+              PRODUCT ID
               </TableHead>
               <TableHead className="prm-b -tracking-tight text-foreground dark:text-foreground">
-                Status
+                Category
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {currentProducts.map((product) => (
-              <TableRow key={product.id}>
+            {currentProducts.map((product , i) => (
+              <TableRow key={product.product_id}>
                 <TableCell>
                   <div className="w-[50px] h-[50px] bg-gray-400 rounded-lg animate-pulse" />
                   {/* <Image
@@ -115,10 +119,13 @@ export default function InventoryPage() {
                   /> */}
                 </TableCell>
                 <TableCell className="text-md prm-sb -tracking-tight text-foreground dark:text-foreground">
-                  {product.name}
+                  {product.product_name}
                 </TableCell>
                 <TableCell className="prm-l -tracking-tight text-foreground dark:text-foreground">
-                  {product.description}
+                  {parseInt(product.cost).toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "THB",
+                  })}
                 </TableCell>
                 <TableCell className="prm-l -tracking-tight text-foreground dark:text-foreground">
                   {parseInt(product.price).toLocaleString("en-US", {
@@ -127,7 +134,7 @@ export default function InventoryPage() {
                   })}
                 </TableCell>
                 <TableCell className="prm-l -tracking-tight text-foreground dark:text-foreground">
-                  {product.qty}
+                  {product.product_id}
                 </TableCell>
                 <TableCell className="prm-l -tracking-tight text-foreground dark:text-foreground">
                   {product.category}

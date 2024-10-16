@@ -23,7 +23,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
+import { useToast } from "@/hooks/use-toast"
+import {useSession} from '@/lib/custom_hooks/useSession'
 const formSchema = z.object({
   product_name: z.string().min(2, {
     message: "Product name must be at least 2 characters.",
@@ -38,31 +39,62 @@ const formSchema = z.object({
 })
 
 export default function ProductForm() {
+
+  const {toast} = useToast();
+  const{user , loading} = useSession();
+
+
+  const api = process.env.NEXT_PUBLIC_API_URL_D
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      product_name: "Procedure ProductStock 00",
-      cost: 5,
-      price: 10,
-      branch_id: 9,
-      total_qty: 10,
-      action: "the first one SUM function is not working",
-      user_id: 3,
-      category: "5",
+      product_name: "",
+      cost: 0,
+      price: 0,
+      branch_id: 0,
+      total_qty: 0,
+      action: "",
+      user_id: 0,
+      category: "",
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true)
-    // Simulate API call
+    const res = await fetch(`${api}/create-product`,{
+      method: "POST",
+      headers:{
+        "Content-Type": "application/json",
+        // "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(values),
+    })
+    if(!res.ok){
+      toast({
+        title: "Error",
+        description: "Failed to create product",
+        variant: "destructive",
+      })
+    }
+    const data = await res.json()
+    console.log(data)
     setTimeout(() => {
-      console.log(values)
+      toast({
+        title:`${values.product_name} created successfully`,
+        description:"Product created successfully",
+        variant:"success"
+      })
       setIsSubmitting(false)
+      form.reset()
     }, 2000)
   }
+if(loading){
+  return <div>Loading...</div>
+}
 
+if(user.roles.includes('admin')){
   return (
     <div className="max-w-2xl mx-auto p-6 rounded-lg shadow-lg">
       <h1 className="text-2xl font-bold mb-6 text-foreground dark:text-foreground">CREATE NEW PRODUCT</h1>
@@ -197,4 +229,4 @@ export default function ProductForm() {
       </Form>
     </div>
   )
-}
+}}

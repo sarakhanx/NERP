@@ -14,6 +14,8 @@ import {
   Palette,
   UserRoundCheck,
   UserPlus,
+  GitBranchPlus,
+  Store,
 
 } from "lucide-react";
 
@@ -22,6 +24,8 @@ const services = [
   { name: "Departments", icon: Workflow, href: "/nerp/settings/create-department" },
   { name: "Validation Users", icon: UserRoundCheck, href: "/nerp/settings/validate-user" },
   { name: "List Departments", icon: TableProperties, href: "/nerp/settings/get-departments" },
+  { name: "Branches", icon: GitBranchPlus, href: "/nerp/settings/branches" },
+  { name: "Listed Branches", icon: Store, href: "/nerp/settings/listed-branches" },
 ];
 
 const Sidebar = ({
