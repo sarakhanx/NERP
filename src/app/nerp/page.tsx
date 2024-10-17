@@ -1,16 +1,14 @@
 'use client'
 import React from "react";
 import { useSession } from "@/lib/custom_hooks/useSession";
-import { useRouter } from "next/navigation";
 
 
 
 
 export default function Home() {
   const {user , loading } = useSession()
-  const router = useRouter()
   if(loading){
-    //Must be skelleton
+    // FIXME - Must be skelleton
     return <div className="flex justify-center items-center w-full h-full text-foreground dark:text-foreground">Loading...</div>
   }
 

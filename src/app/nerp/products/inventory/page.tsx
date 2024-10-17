@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +20,6 @@ export default function InventoryPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(100);
   const [products, setProducts] = useState<any[]>([])
-
   const totalPages = Math.ceil(products.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -39,7 +37,7 @@ export default function InventoryPage() {
     }
 
     fetchData()
-  },[currentPage,itemsPerPage])
+  },[currentPage,itemsPerPage,api])
 
 
   // Paginations
@@ -106,7 +104,7 @@ export default function InventoryPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {currentProducts.map((product , i) => (
+            {currentProducts.map((product) => (
               <TableRow key={product.product_id}>
                 <TableCell>
                   <div className="w-[50px] h-[50px] bg-gray-400 rounded-lg animate-pulse" />

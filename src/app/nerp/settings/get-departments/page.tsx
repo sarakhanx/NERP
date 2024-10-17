@@ -20,7 +20,7 @@ export default function GetDepartments() {
             setDepartment(data)
         }
         resp()
-    }, [])
+    }, [departments])
 
     const deleteDepartment = async (name : string) => {
         const token = getCookie("token")

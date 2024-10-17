@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ChartConfig, ChartContainer , ChartTooltip, ChartTooltipContent , ChartLegend, ChartLegendContent} from "@/components/ui/chart";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 const chartData = [
   { date: "monday", men: 10, woman: 80 , currency:500},
   { date: "tuesday", men: 20, woman: 200 , currency:500},

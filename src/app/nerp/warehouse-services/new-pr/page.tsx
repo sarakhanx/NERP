@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect } from 'react'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
 import * as z from "zod"
@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,6 +17,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { useToast } from '@/hooks/use-toast'
 
 const productSchema = z.object({
   product_name: z.string().min(1, "Product name is required"),
@@ -29,6 +29,8 @@ const productSchema = z.object({
   sale_order_discount: z.number().min(0, "Discount must be non-negative"),
   sale_order_price: z.number().min(0, "Sale price must be non-negative"),
   sale_order_price_total: z.number().min(0, "Total price must be non-negative"),
+  branch_id: z.number().int().positive("Branch ID must be positive"),
+  user_id: z.number().int().positive("User ID must be positive"),
 })
 
 const formSchema = z.object({
@@ -39,7 +41,7 @@ const formSchema = z.object({
   user_id: z.number().int().positive("User ID must be positive"),
   department_id: z.number().int().positive("Department ID must be positive"),
   vendor_data: z.string(),
-  doc_prefix_id: z.string().min(1, "Document Prefix ID is required"),
+  doc_prefix_id: z.number().int().positive("Document Prefix ID must be positive"),
   products: z.array(productSchema),
   doc_log_action: z.string(),
   doc_log_qty: z.number().int().nonnegative("Log quantity must be non-negative"),
@@ -51,6 +53,7 @@ const formSchema = z.object({
 
 const api = process.env.NEXT_PUBLIC_API_URL;
 export default function DynamicFormWithUpdatedCalculations() {
+  const {toast} = useToast();
   const [calculatedValues, setCalculatedValues] = useState({
     doc_discount: 0,
     ex_vat: 0,
@@ -68,7 +71,7 @@ export default function DynamicFormWithUpdatedCalculations() {
       user_id: 0,
       department_id: 0,
       vendor_data: "",
-      doc_prefix_id: "PO",
+      doc_prefix_id: 1,
       products: [],
       doc_log_action: "",
       doc_log_qty: 0,
@@ -84,6 +87,14 @@ export default function DynamicFormWithUpdatedCalculations() {
     name: "products",
   })
 
+  const watchBranchId = form.watch("branch_id");
+  const watchUserId = form.watch("user_id");
+  useEffect(() => {
+    fields.forEach((_, index) => {
+      form.setValue(`products.${index}.branch_id`, watchBranchId);
+      form.setValue(`products.${index}.user_id`, watchUserId);
+    });
+  }, [watchBranchId, watchUserId, fields, form]);
 
   const watchProducts = form.watch("products")
   useEffect(() => {
@@ -117,20 +128,45 @@ export default function DynamicFormWithUpdatedCalculations() {
     }
 
     calculateTotals()
-  }, [watchProducts])
+  }, [watchProducts, api])
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
-    // Here you would typically send the data to your backend
-    const response = await fetch(`${api}/purchasing/createpurchaseorder`, {
-      method: "POST",
+    try {
+      const resp = await fetch(`${api}/purchasing/createpurchaseorder`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-        },
+        }, 
         body: JSON.stringify(values),
-      })
-      const data = await response.json()
-      console.log(data)
+      });
+
+      if (!resp.ok) {
+        const errorData = await resp.json();
+        throw new Error(errorData.message || "An error occurred while creating the purchase order.");
+      }
+
+      const data = await resp.json();
+      if (data.status === "success") {
+        toast({
+          title: `${data.status}`,
+          description: `${data.message}`,
+          variant: "success",
+        });
+        form.reset()
+      } else {
+        toast({
+          title: "Unexpected Response",
+          description: `Received unexpected status: ${data.status}`,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: (error as Error).message || "An unknown error occurred.",
+        variant: "destructive",
+      });
+    }
   }
 
   return (
@@ -146,7 +182,8 @@ export default function DynamicFormWithUpdatedCalculations() {
               <FormItem >
                 <FormLabel>Document</FormLabel>
                 <FormControl>
-                  <Input type="text" {...field} onChange={e => field.onChange(e.target.value)} />
+                  {/* TODO - Make type as text again */}
+                  <Input type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value))} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -333,6 +370,24 @@ export default function DynamicFormWithUpdatedCalculations() {
                     </FormItem>
                   )}
                 />
+                {/* //FIXME - all id need to label it to have the string*/}
+                <FormField
+                  control={form.control}
+                  name={`products.${index}.branch_id`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Branch ID</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="number"
+                          {...field} 
+                          onChange={e => field.onChange(parseFloat(e.target.value))}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name={`products.${index}.action`}
@@ -403,6 +458,8 @@ export default function DynamicFormWithUpdatedCalculations() {
               sale_order_discount: 0,
               sale_order_price: 0,
               sale_order_price_total: 0,
+              branch_id: 0,
+              user_id: 0,
             })}
           >
             <Plus className="mr-2 h-4 w-4" /> Add Product

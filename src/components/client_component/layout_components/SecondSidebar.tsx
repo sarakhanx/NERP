@@ -11,7 +11,6 @@ import Link from "next/link";
 import {
     Workflow,
     TableProperties,
-  Palette,
   UserRoundCheck,
   UserPlus,
   GitBranchPlus,

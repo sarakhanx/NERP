@@ -46,3 +46,28 @@ export interface Department {
     doc_log_action: string
     doc_log_qty: number
   }
+
+ export interface Document {
+    doc_id: number
+    doc_status_id: number
+    status_name: string
+    ex_vat: number
+    vat: number
+    in_vat: number
+    doc_discount: number
+    doc_note: string
+    doc_prefix_name: { String: string; Valid: boolean }
+    created_at: { Time: string; Valid: boolean }
+    branch_id: number
+    user_id: number
+    user_name: string
+    vendor_data: string
+    branch_name: string
+  }
+  
+  export interface DocumentTableProps {
+    data: Document[]
+    totalPages: number
+    currentPage: number
+    onPageChange: (page: number) => void
+  }

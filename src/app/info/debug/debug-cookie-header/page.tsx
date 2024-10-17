@@ -1,4 +1,3 @@
-import { GetServerSideProps } from 'next';
 import { getCookie } from 'cookies-next';
 
 

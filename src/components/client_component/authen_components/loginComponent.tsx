@@ -51,7 +51,7 @@ export default function LoginComponent() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
   const handleRoleChange = (roles: string) => {
-    let newRoles = ["user"];
+    const newRoles = ["user"];
     if (roles === "admin") {
       newRoles.push("admin");
     } else if (roles === "moderator") {
@@ -85,7 +85,7 @@ export default function LoginComponent() {
         }else{
           console.log("The Response from the server is :",data);
         }
-      } catch (error : any) {
+      } catch (error : any | unknown) {
         console.error("Error:", error.message);
         throw new Error("Error:", error.message);
       }
@@ -109,7 +109,7 @@ export default function LoginComponent() {
         }else{
           console.log("The Response from the server is :",data);
         }
-      } catch (error : any) {
+      } catch (error : any | unknown) {
         console.error('Error:', error.message);
         throw new Error("Error:", error.message);
       }
